@@ -2,43 +2,26 @@
 
 namespace DesignPatterns\Creational\AbstractFactory\Tests;
 
-use DesignPatterns\Creational\AbstractFactory\AbstractFactory;
-use DesignPatterns\Creational\AbstractFactory\HtmlFactory;
-use DesignPatterns\Creational\AbstractFactory\JsonFactory;
+use DesignPatterns\Creational\AbstractFactory\CsvParser;
+use DesignPatterns\Creational\AbstractFactory\JsonParser;
+use DesignPatterns\Creational\AbstractFactory\ParserFactory;
+use PHPUnit\Framework\TestCase;
 
-/**
- * AbstractFactoryTest tests concrete factories
- */
-class AbstractFactoryTest extends \PHPUnit_Framework_TestCase
+class AbstractFactoryTest extends TestCase
 {
-    public function getFactories()
+    public function testCanCreateCsvParser()
     {
-        return array(
-            array(new JsonFactory()),
-            array(new HtmlFactory())
-        );
+        $factory = new ParserFactory();
+        $parser = $factory->createCsvParser(CsvParser::OPTION_CONTAINS_HEADER);
+
+        $this->assertInstanceOf(CsvParser::class, $parser);
     }
 
-    /**
-     * This is the client of factories. Note that the client does not
-     * care which factory is given to him, he can create any component he 
-     * wants and render how he wants.
-     * 
-     * @dataProvider getFactories
-     */
-    public function testComponentCreation(AbstractFactory $factory)
+    public function testCanCreateJsonParser()
     {
-        $article = array(
-            $factory->createText('Lorem Ipsum'),
-            $factory->createPicture('/image.jpg', 'caption'),
-            $factory->createText('footnotes')
-        );
+        $factory = new ParserFactory();
+        $parser = $factory->createJsonParser();
 
-        $this->assertContainsOnly('DesignPatterns\Creational\AbstractFactory\MediaInterface', $article);
-
-        /* this is the time to look at the Builder pattern. This pattern
-         * helps you to create complex object like that article above with
-         * a given Abstract Factory
-         */
+        $this->assertInstanceOf(JsonParser::class, $parser);
     }
 }
